@@ -45,7 +45,7 @@ class _LocationScreenState extends State<LocationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '$temperature',
+              '${temperature!.toInt()}°C',
               style: TextStyle(color: Colors.black),
             ),
             Text(
