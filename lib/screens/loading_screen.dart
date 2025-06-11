@@ -1,7 +1,9 @@
+import 'package:clima/screens/location_screen.dart';
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:clima/services/location.dart';
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -11,31 +13,45 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double? latitude;
+  double? longitude;
+
   String apiKey = 'b0b3541d1f66e99621205eba9b69be8d';
   Location location = Location();
-  void getLocation() async {
-    location.handleLocationPermission();
-    await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
-  }
 
-  void getData() async {
-    http.Response response = await http.get(Uri.parse(
-        'http://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=$apiKey'));
+  void getLocationData() async {
+    try {
+      location.handleLocationPermission();
+      await location.getCurrentLocation();
 
-    if (response.statusCode == 200) {
-      String data = response.body;
-      print(data);
-    } else {
-      print(response.statusCode);
+      latitude = location.latitude;
+      longitude = location.longitude;
+
+      Networking networking = Networking(
+          url:
+              'http://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric');
+
+      var weatherData = await networking.getData();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return LocationScreen(
+              locationWeather: weatherData,
+            );
+          },
+        ),
+      );
+      print('Data berhasil terkirim');
+    } catch (e) {
+      print('error : $e');
     }
   }
 
   @override
   void initState() {
-    getLocation();
-    getData();
+    getLocationData();
     super.initState();
   }
 
@@ -43,12 +59,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              getLocation();
-              getData();
-            },
-            child: Text('Get Location')),
+        child: SpinKitDoubleBounce(
+          color: Colors.black,
+          size: 100,
+        ),
       ),
     );
   }
