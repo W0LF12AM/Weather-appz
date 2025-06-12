@@ -2,6 +2,7 @@
 // print(condition);
 // print(cityName);
 
+import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -17,6 +18,10 @@ class _LocationScreenState extends State<LocationScreen> {
   double? temperature;
   int? condition;
   String? cityName;
+  String? weatherEmoji;
+  String? weatherMessage;
+
+  WeatherModel weather = WeatherModel();
 
   @override
   void initState() {
@@ -27,9 +32,19 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUi(dynamic weatherData) {
     setState(() {
+      if (weatherData == null) {
+        temperature = 0;
+        weatherEmoji = 'Error :3';
+        weatherMessage = 'can\'t get the weather data';
+        cityName = ' ';
+        return;
+      }
+
       temperature = weatherData['main']['temp'];
       condition = weatherData['weather'][0]['id'];
       cityName = weatherData['name'];
+      weatherEmoji = weather.getWeatherEmoji(condition!);
+      weatherMessage = weather.getTemperatureMessage(temperature!, cityName!);
     });
 
     print(temperature);
@@ -53,7 +68,15 @@ class _LocationScreenState extends State<LocationScreen> {
               style: TextStyle(color: Colors.black),
             ),
             Text(
+              weatherEmoji!,
+              style: TextStyle(color: Colors.black),
+            ),
+            Text(
               '$cityName',
+              style: TextStyle(color: Colors.black),
+            ),
+            Text(
+              weatherMessage!,
               style: TextStyle(color: Colors.black),
             )
           ],
