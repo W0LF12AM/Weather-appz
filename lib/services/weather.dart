@@ -10,14 +10,15 @@ class WeatherModel {
     String openWeatherURL = 'http://api.openweathermap.org/data/2.5/weather';
     Location location = Location();
 
-    location.handleLocationPermission();
+    await location.handleLocationPermission();
     await location.getCurrentLocation();
 
     latitude = location.latitude;
     longitude = location.longitude;
 
     Networking networking = Networking(
-        url: '$openWeatherURL?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric');
+        url:
+            '$openWeatherURL?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric');
 
     var weatherData = await networking.getData();
 
