@@ -100,9 +100,18 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
                 FloatingActionButton(
                   heroTag: 'Go to home button',
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => CityScreen()));
+                  onPressed: () async {
+                    var typedName = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return CityScreen();
+                      }),
+                    );
+                    if (typedName != null) {
+                      var weatherData =
+                          await weather.getCityWeatherByName(typedName);
+                      updateUi(weatherData);
+                    }
                   },
                   child: Icon(Icons.home_max_rounded),
                 ),
