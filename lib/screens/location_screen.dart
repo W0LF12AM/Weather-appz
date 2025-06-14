@@ -18,10 +18,13 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   double? temperature;
+  int? humidity;
+  int? pressure;
   int? condition;
   String? cityName;
   String? weatherEmoji;
   String? weatherMessage;
+  String? description;
 
   WeatherModel weather = WeatherModel();
 
@@ -45,11 +48,16 @@ class _LocationScreenState extends State<LocationScreen> {
       temperature = weatherData['main']['temp'];
       condition = weatherData['weather'][0]['id'];
       cityName = weatherData['name'];
+      humidity = weatherData['main']['humidity'];
+      pressure = weatherData['main']['pressure'];
+      description = weatherData['weather'][0]['description'];
       weatherEmoji = weather.getWeatherEmoji(condition!);
       weatherMessage = weather.getTemperatureMessage(temperature!, cityName!);
     });
 
     print(temperature);
+    print(humidity);
+    print(pressure);
     print(condition);
     print(cityName);
   }
@@ -73,9 +81,23 @@ class _LocationScreenState extends State<LocationScreen> {
               weatherEmoji!,
               style: TextStyle(color: Colors.black),
             ),
+            Text('$description'),
             Text(
               '$cityName',
               style: TextStyle(color: Colors.black),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('$humidity'),
+                SizedBox(
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.black,
+                  ),
+                ),
+                Text('$pressure')
+              ],
             ),
             Text(
               weatherMessage!,
