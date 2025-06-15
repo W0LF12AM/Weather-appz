@@ -6,6 +6,9 @@ const TexfieldInputDecoration = InputDecoration(
     suffixIcon: Icon(Icons.search),
     hintText: 'Enter City Name',
     hintStyle: TextStyle(color: Colors.grey),
+    errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: Colors.red, width: 2)),
     border: OutlineInputBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(10),

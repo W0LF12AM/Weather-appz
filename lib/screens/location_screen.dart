@@ -4,11 +4,9 @@
 
 // ignore_for_file: avoid_print, prefer_const_constructors
 
-import 'package:clima/screens/city_screen.dart';
 import 'package:clima/services/weather.dart';
 import 'package:clima/utilities/constatnts.dart';
 import 'package:clima/utilities/icon_and_number_wdiget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -85,7 +83,10 @@ class _LocationScreenState extends State<LocationScreen> {
                   //   cityName = value;
                   // },
                   onSubmitted: (value) async {
-                    cityName = value;
+                    value.isEmpty
+                        ? cityName = 'Mountain View'
+                        : cityName = value;
+
                     var weatherData =
                         await WeatherModel().getCityWeatherByName(cityName!);
                     updateUi(weatherData);
@@ -108,9 +109,10 @@ class _LocationScreenState extends State<LocationScreen> {
                       Text(
                         '$cityName',
                         style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: h2),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: h2,
+                        ),
                       ),
                       // Text(
                       //   '$condition',
@@ -160,42 +162,6 @@ class _LocationScreenState extends State<LocationScreen> {
               ],
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // FloatingActionButton(
-              //   heroTag: 'refresh Button',
-              //   onPressed: () async {
-              //     var weatherData = await WeatherModel().getLocation();
-              //     updateUi(weatherData);
-              //   },
-              //   child: Icon(Icons.refresh),
-              // ),
-              // SizedBox(
-              //   width: 20,
-              // ),
-              FloatingActionButton(
-                heroTag: 'Go to home button',
-                onPressed: () async {
-                  var typedName = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return CityScreen();
-                    }),
-                  );
-                  if (typedName != null) {
-                    var weatherData =
-                        await weather.getCityWeatherByName(typedName);
-                    updateUi(weatherData);
-                  }
-                },
-                child: Icon(Icons.home_max_rounded),
-              ),
-            ],
-          )
         ],
       ),
     );
