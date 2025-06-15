@@ -2,10 +2,16 @@
 // print(condition);
 // print(cityName);
 
+// ignore_for_file: avoid_print, prefer_const_constructors
+
 import 'package:clima/screens/city_screen.dart';
 import 'package:clima/services/weather.dart';
+import 'package:clima/utilities/constatnts.dart';
+import 'package:clima/utilities/icon_and_number_wdiget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key, this.locationWeather});
@@ -65,82 +71,132 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${temperature!.toInt()}°C',
-              style: TextStyle(color: Colors.black),
-            ),
-            Text(
-              '$condition',
-              style: TextStyle(color: Colors.black),
-            ),
-            Text(
-              weatherEmoji!,
-              style: TextStyle(color: Colors.black),
-            ),
-            Text('$description'),
-            Text(
-              '$cityName',
-              style: TextStyle(color: Colors.black),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
               children: [
-                Text('$humidity'),
-                SizedBox(
-                  height: 20,
-                  child: VerticalDivider(
-                    color: Colors.black,
-                  ),
-                ),
-                Text('$pressure')
-              ],
-            ),
-            Text(
-              weatherMessage!,
-              style: TextStyle(color: Colors.black),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  heroTag: 'refresh Button',
-                  onPressed: () async {
-                    var weatherData = await WeatherModel().getLocation();
+                TextField(
+                  decoration: TexfieldInputDecoration,
+                  // onChanged: (value) {
+                  //   cityName = value;
+                  // },
+                  onSubmitted: (value) async {
+                    cityName = value;
+                    var weatherData =
+                        await WeatherModel().getCityWeatherByName(cityName!);
                     updateUi(weatherData);
                   },
-                  child: Icon(Icons.refresh),
                 ),
                 SizedBox(
-                  width: 20,
+                  height: 30,
                 ),
-                FloatingActionButton(
-                  heroTag: 'Go to home button',
-                  onPressed: () async {
-                    var typedName = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return CityScreen();
-                      }),
-                    );
-                    if (typedName != null) {
-                      var weatherData =
-                          await weather.getCityWeatherByName(typedName);
-                      updateUi(weatherData);
-                    }
-                  },
-                  child: Icon(Icons.home_max_rounded),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+                  decoration: BoxDecoration(
+                      gradient:
+                          RadialGradient(colors: nightGradient, radius: 3),
+                      borderRadius: BorderRadius.circular(20)),
+
+                  //INSIDE CONTAINER//---------------------------------------------------------------
+
+                  child: Column(
+                    children: [
+                      Text(
+                        '$cityName',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: h2),
+                      ),
+                      // Text(
+                      //   '$condition',
+                      //   style: GoogleFonts.poppins(color: Colors.white),
+                      // ),
+                      Lottie.asset(
+                        weatherEmoji!,
+                      ),
+                      Text('$description',
+                          style: GoogleFonts.poppins(
+                              color: Colors.white, fontSize: h3)),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconAndNumberWdiget(
+                                icons: Icons.water_drop_outlined,
+                                numbers: humidity),
+                            IconAndNumberWdiget(
+                                icons: Icons.thermostat,
+                                numbers: '${temperature!.toInt()}°C'),
+                            IconAndNumberWdiget(
+                                icons: Icons.speed, numbers: pressure!)
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          weatherMessage!,
+                          style: GoogleFonts.poppins(
+                              color: Colors.white, fontSize: h4),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // FloatingActionButton(
+              //   heroTag: 'refresh Button',
+              //   onPressed: () async {
+              //     var weatherData = await WeatherModel().getLocation();
+              //     updateUi(weatherData);
+              //   },
+              //   child: Icon(Icons.refresh),
+              // ),
+              // SizedBox(
+              //   width: 20,
+              // ),
+              FloatingActionButton(
+                heroTag: 'Go to home button',
+                onPressed: () async {
+                  var typedName = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return CityScreen();
+                    }),
+                  );
+                  if (typedName != null) {
+                    var weatherData =
+                        await weather.getCityWeatherByName(typedName);
+                    updateUi(weatherData);
+                  }
+                },
+                child: Icon(Icons.home_max_rounded),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
